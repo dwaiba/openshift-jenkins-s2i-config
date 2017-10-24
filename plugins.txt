@@ -56,7 +56,7 @@ momentjs:1.1.1
 multiple-scms:0.6
 openshift-login:0.12
 openshift-pipeline:1.0.52
-openshift-sync:0.1.26
+openshift-sync:0.1.25
 pipeline-build-step:2.5.1
 pipeline-github-lib:1.0
 pipeline-graph-analysis:1.5
