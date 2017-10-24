@@ -53,7 +53,7 @@ multiple-scms:0.6
 openshift-login:0.12
 openshift-pipeline:1.0.47
 openshift-sync:0.1.32
-pipeline-build-step:2.5
+pipeline-build-step:2.5.1
 pipeline-github-lib:1.0
 pipeline-graph-analysis:1.4
 pipeline-input-step:2.7
