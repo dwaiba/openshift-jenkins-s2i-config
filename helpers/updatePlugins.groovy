@@ -10,7 +10,7 @@ def parser = new JsonSlurper()
 
 File inputList
 
-if (args[0]) {  // Did the user provide an input plugin list?
+if (args && args[0]) {  // Did the user provide an input plugin list?
     inputList = new File(args[0])
 } else {
     println "Error! No input file provided"
@@ -21,10 +21,12 @@ if (!(inputList.exists() && inputList.canRead())) {
     println "Specified input file `${inputList.absolutePath}` does not exist or is not readable."
 }
 
-if (inputList) {    // User passed an input file as an argument
-    inputList.readLines().parallelStream().forEach { plugin ->
-        def (name, _) = plugin.tokenize( ':' )
-        def url = new URL("${PLUGINS_API_BASE_URL}${name}")
+if (inputList) {    // User DID pass an input file as an argument
+    inputList.readLines()
+             .parallelStream()
+             .map({line -> line.tokenize( ':' )[0]})
+             .map({name -> new URL("${PLUGINS_API_BASE_URL}${name}")})
+             .forEach { url ->  // Iterate over input file lines
         def conn = url.openConnection()
         conn.addRequestProperty("Accept", "application/json")
         conn.with {
@@ -32,19 +34,19 @@ if (inputList) {    // User passed an input file as an argument
         }
         try {
             if (conn.getResponseCode() == 200) {
-                def jsonResponse = parser.parseText(conn.getInputStream().text)
+                def jsonResponse = parser.parseText((String)conn.getInputStream().text)
 
                 newPlugins.add("${jsonResponse.name}:${jsonResponse.version}")
             } else {
-                println "Error accessing Jenkins Plugins API for `${plugin}`"
+                println "Error accessing Jenkins Plugins API: ${url.toString()}"
             }
         } catch (Exception e) {
-            println "Error retrieving data on ${name} from Plugins API"
+            println "Error retrieving data from Plugins API: ${url.toString()}"
             e.printStackTrace()
         }
     }
 
-    newPlugins.sort().each {
+    newPlugins.sort({ a,b -> a.toLowerCase().compareTo(b.toLowerCase())}).each {
         println it
     }
 } else {
