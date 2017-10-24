@@ -4,13 +4,9 @@ import groovy.json.JsonSlurper
 
 import java.util.stream.Collectors
 
-def jenkinsVersion = [
-    major: 2,
-    minor: 46,
-    micro: 3
-]
+def jenkinsVersion = (2*1000000)+(46*1000)+3
 
-final def PLUGINS_API_BASE_URL = 'https://plugins.jenkins.io/api/plugin/'
+final def PLUGINS_API_BASE_URL = 'https://plugins.jenkins.io/api/plugins'
 
 def newPlugins = []
 
@@ -29,45 +25,55 @@ if (!(inputList.exists() && inputList.canRead())) {
     println "Specified input file `${inputList.absolutePath}` does not exist or is not readable."
 }
 
-if (inputList) {    // User DID pass an input file as an argument
-    inputList.readLines()
-             .parallelStream()
-             .map({line -> line.tokenize( ':' )})
-             .map({name -> [
-                    url: "${PLUGINS_API_BASE_URL}${name[0]}".toString(),
-                    name: name[0],
-                    version: name[1]
-                ]})
-             .forEach { input ->  // Iterate over input file lines
-        def conn = new URL(input.url).openConnection()
-        conn.addRequestProperty("Accept", "application/json")
-        conn.with {
-            requestMethod = 'GET'
-        }
-        try {
-            if (conn.getResponseCode() == 200) {
-                def jsonResponse = parser.parseText((String) conn.getInputStream().text)
+def conn = new URL("${PLUGINS_API_BASE_URL}?pages=1&limit=5000").openConnection()
+conn.addRequestProperty("Accept", "application/json")
 
-                def minVersion = [
-                    major: jsonResponse.requiredCore.tokenize('.')[0] as Integer,
-                    minor: jsonResponse.requiredCore.tokenize('.')[1] as Integer,
-                    micro: (jsonResponse.requiredCore.tokenize('.')[2] ?: 0) as Integer
-                ]
-                if (minVersion.major >= jenkinsVersion.major && minVersion.minor >= jenkinsVersion.minor && minVersion.micro >= jenkinsVersion.micro) {
-                    newPlugins.add("${jsonResponse.name}:${jsonResponse.version}")
-                    println "Updated ${jsonResponse.name} to ${jsonResponse.version}"
-                } else {
-                    newPlugins.add("${input.name}:${input.version}")
-                    println "Keeping ${input.name} at ${input.version}"
+def compatible = [:]
+
+try {
+    if (conn.getResponseCode() == 200) {
+        String jsonText = conn.getInputStream().text
+
+        def pluginList = parser.parseText(jsonText).plugins
+
+        pluginList
+            .stream()
+            .map({ p ->
+                def (major, minor, micro) = p.requiredCore.tokenize( '.' )
+                def value = (Integer.parseInt(major)*1000000)+(Integer.parseInt(minor)*1000)+Integer.parseInt(micro?:"0")
+                p.put('versionInt', value)
+                return p
+            })
+            .filter({ p -> p.versionInt <= jenkinsVersion })
+            .each { p ->
+                if (compatible[p.name] && compatible[p.name].versionInt < p.versionInt) {
+                    println "${p.name} version ${p.versionInt} is newer than ${compatible[p.name].versionInt}"
+                    compatible.replace(p.name, [name: p.name, versionInt: p.versionInt, version: p.version])
+                } else if (compatible[p.name] == null) {
+                    compatible.put(p.name, [name: p.name, versionInt: p.versionInt, version: p.version])
                 }
-            } else {
-                println "Error accessing Jenkins Plugins API: ${input.url.toString()}"
             }
-        } catch (Exception e) {
-            println "Error retrieving data from Plugins API: ${input.url.toString()}"
-            e.printStackTrace()
-        }
+    } else {
+        println "Got non-200 response"
     }
+} catch (Exception e) {
+    println "Error retrieving plugins list"
+    e.printStackTrace()
+}
+
+if (inputList) {    // User DID pass an input file as an argument
+    def pluginsText = inputList.readLines()
+             .stream()
+             .map({ line -> line.tokenize( ':' ) })
+             .map({ name ->
+                if (compatible[name[0]]) {
+                    return String.format("%s:%s", name[0], compatible[name[0]].version)
+                } else {
+                    return String.format("%s:%s", name[0], name[1])
+                }
+             })
+             .sorted()
+             .collect(Collectors.joining("\n"))
 
     File output
     if (args.length>1 && args[1]) {  // Did the user provide an output file?
@@ -76,10 +82,6 @@ if (inputList) {    // User DID pass an input file as an argument
             output = null
         }
     }
-    def pluginsText = newPlugins
-            .sort({ a,b -> a.toLowerCase().compareTo(b.toLowerCase())})
-            .stream()
-            .collect(Collectors.joining('\n'))
     if (output) {
         output.write(pluginsText)
     } else {
