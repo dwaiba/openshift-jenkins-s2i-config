@@ -16,7 +16,7 @@ build-timeout:1.19
 buildgraph-view:1.8
 claim:2.9
 cloudbees-bitbucket-branch-source:2.2.4
-cloudbees-folder:6.2.1
+cloudbees-folder:6.1.2
 conditional-buildstep:1.3.6
 config-file-provider:2.16.4
 configurationslicing:1.47
