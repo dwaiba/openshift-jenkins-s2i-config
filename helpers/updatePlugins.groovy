@@ -2,6 +2,8 @@
 
 import groovy.json.JsonSlurper
 
+import java.util.stream.Collectors
+
 final def PLUGINS_API_BASE_URL = 'https://plugins.jenkins.io/api/plugin/'
 
 def newPlugins = []
@@ -46,9 +48,18 @@ if (inputList) {    // User DID pass an input file as an argument
         }
     }
 
-    newPlugins.sort({ a,b -> a.toLowerCase().compareTo(b.toLowerCase())}).each {
-        println it
+    File output
+    if (args.length>1 && args[1]) {  // Did the user provide an output file?
+        output = new File(args[1])
+        if (!(output.canWrite() || output.createNewFile())) {
+            output = null
+        }
     }
+    def pluginsText = newPlugins
+            .sort({ a,b -> a.toLowerCase().compareTo(b.toLowerCase())})
+            .stream()
+            .collect(Collectors.joining('\n'))
+    output.write(pluginsText)
 } else {
     println "You MUST provide an absolute or relative path to an input file for this script to work."
     println "EX: ./updatePlugins.groovy /path/to/plugins.txt"
