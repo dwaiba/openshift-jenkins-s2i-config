@@ -89,7 +89,7 @@ workflow-api:2.23.1
 workflow-basic-steps:2.6
 workflow-cps-global-lib:2.9
 workflow-cps:2.41
-workflow-durable-task-step:2.12
+workflow-durable-task-step:2.13
 workflow-job:2.11.1
 workflow-multibranch:2.16
 workflow-remote-loader:1.4
