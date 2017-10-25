@@ -1,6 +1,6 @@
 ace-editor:1.1
 authentication-tokens:1.3
-blueocean-pipeline-editor:0.2.0
+blueocean-pipeline-editor:1.3.0
 blueocean:1.3.0
 bouncycastle-api:2.16.1
 branch-api:2.0.10
