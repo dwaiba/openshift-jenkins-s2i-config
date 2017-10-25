@@ -1,8 +1,3 @@
-<!--
-This file is used to configure the Jenkins Script Security Plugin. It's copied into the correct location using the Jenkins S2I builder. 
-
-https://wiki.jenkins-ci.org/display/JENKINS/Script+Security+Plugin
--->
 <?xml version='1.0' encoding='UTF-8'?>
 <scriptApproval plugin="script-security@1.29">
   <approvedScriptHashes/>
