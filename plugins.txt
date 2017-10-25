@@ -3,7 +3,7 @@ authentication-tokens:1.3
 blueocean:1.2.4
 blueocean-pipeline-editor:1.2.4
 bouncycastle-api:2.16.1
-branch-api:2.0.10
+branch-api:2.0.11
 build-monitor-plugin:1.12+build.201704111018
 cloudbees-folder:6.1.2
 credentials:2.1.14
