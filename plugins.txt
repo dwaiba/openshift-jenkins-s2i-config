@@ -41,7 +41,7 @@ jackson2-api:2.7.3
 jquery-detached:1.2.1
 jquery:1.11.2-0
 junit:1.20
-kubernetes:0.11
+kubernetes:1.1
 mailer:1.20
 mapdb-api:1.0.9.0
 matrix-auth:1.7
@@ -62,7 +62,7 @@ pipeline-model-api:1.1.8
 pipeline-model-declarative-agent:1.1.1
 pipeline-model-definition:1.1.8
 pipeline-model-extensions:1.1.8
-pipeline-rest-api:2.8
+pipeline-rest-api:2.9
 pipeline-stage-step:2.2
 pipeline-stage-tags-metadata:1.1.8
 pipeline-stage-view:2.8
