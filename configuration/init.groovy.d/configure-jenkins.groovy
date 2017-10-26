@@ -36,6 +36,9 @@ def sonarConfig = Jenkins.instance.getDescriptor('hudson.plugins.sonar.SonarGlob
 
 if (System.getenv("OPENSHIFT_SONARQUBE")==null) {
     LOG.level(Level.INFO, 'OPENSHIFT_SONARQUBE environment variable not set, not configuring SonarQube')
+    System.getenv().entrySet().stream().each {
+        printf("%50s:%s", it.key, it.value)
+    }
 } else {
     def tokenName = 'Jenkins'
 
