@@ -34,7 +34,9 @@ if ( Jenkins.instance.views.findAll{ view -> view instanceof com.smartcodeltd.je
 LOG.log(Level.INFO, 'Get SonarQube config')
 def sonarConfig = Jenkins.instance.getDescriptor('hudson.plugins.sonar.SonarGlobalConfiguration')
 
-if (System.getenv("OPENSHIFT_SONARQUBE")!=null) {
+if (System.getenv("OPENSHIFT_SONARQUBE")==null) {
+    LOG.level(Level.INFO, 'OPENSHIFT_SONARQUBE environment variable not set, not configuring SonarQube')
+} else {
     def tokenName = 'Jenkins'
 
     def sonarHost = "http://sonarqube:9000"
