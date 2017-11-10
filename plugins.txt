@@ -9,6 +9,7 @@ build-monitor-plugin:1.12+build.201704111018
 cloudbees-folder:6.0.4
 credentials-binding:1.13
 credentials:2.1.16
+dependency-check-jenkins-plugin:3.0.1
 display-url-api:2.1.0
 docker-commons:1.9
 docker-workflow:1.14
