@@ -45,11 +45,6 @@ def compatible = [:]
 
 // Plugins listed here will NOT be upgraded.
 def pinned = [
-    'blueocean',
-    'blueocean-pipeline-editor',
-    'openshift-sync',
-    'openshift-login',
-    'openshift-pipeline'
 ]
 
 try {
