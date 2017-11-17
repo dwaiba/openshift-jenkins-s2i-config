@@ -17,6 +17,9 @@ To Integrate with slack follow the steps at https://github.com/jenkinsci/slack-p
 3. The slack room you selected as the default slack channel as SLACK_ROOM
 4. optionally, a jenkins credential can be used for the token and referenced by a custom id at SLACK_TOKEN_CREDENTIAL_ID. This takes precedences over the SLACK_TOKEN
 
+### SonarQube Integration
+By default the deployment will attempt to connect to SonarQube and configure its setup including an authentication token. The default url is http://sonarqube:9000. This can be overriden adding an environment variable named SONARQUBE_URL. To disable SonarQube entirely set an environment variable named DISABLE_SONAR with any value.
+
 ## Contributing
 
 There are some [helpers](helpers/README.MD) to get configuration out of a running Jenkins. See [the guide](https://github.com/rht-labs/api-design/blob/master/CONTRIBUTING.md) for opening PRs/Issues.
