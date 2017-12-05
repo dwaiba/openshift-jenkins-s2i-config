@@ -83,7 +83,8 @@ if (rc == 200) {
     sonarRunner.save()
 
     def addWebhook = new URL("${sonarHost}/api/settings/set").openConnection()
-    def postBody = URLEncoder.encode('key=sonar.webhooks.global&fieldValues=[{"name: "Jenkins", "url": "http://jenkins/sonarqube-webhook/"}]', 'UTF-8')
+    def fieldValues = URLEncoder.encode('{"name":"Jenkins","url":"http://jenkins/sonarqube-webhook/"}', 'UTF-8')
+    def postBody = "key=sonar.webhooks.global&fieldValues=${fieldValues}"
     addWebhook.setRequestMethod('POST')
     addWebhook.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
     addWebhook.setRequestProperty("Authorization", "Basic ${authString}")
