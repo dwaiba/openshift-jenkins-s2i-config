@@ -88,12 +88,14 @@ if (rc == 200) {
     addWebhook.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
     addWebhook.setRequestProperty("Authorization", "Basic ${authString}")
     addWebhook.setDoOutput(true)
+    addWebhook.setDoInput(true)
     addWebhook.getOutputStream().write(postBody.getBytes())
     def webHookRC = addWebhook.getResponseCode()
     if (webHookRC == 204) {
         LOG.log(Level.INFO, 'SonarQube Webhook successfully configured')
     } else {
         LOG.log(Level.WARNING, 'SonarQube Webhook configuration FAILED')
+        LOG.log(Level.WARNING, addWebhook.getInputStream().text)
     }
 
     LOG.log(Level.INFO, 'SonarQube configuration complete')
