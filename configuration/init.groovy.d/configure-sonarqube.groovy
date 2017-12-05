@@ -93,7 +93,7 @@ if (rc == 200) {
     if (webHookRC == 204) {
         LOG.log(Level.INFO, 'SonarQube Webhook successfully configured')
     } else {
-        LOG.log(Level.ERROR, 'SonarQube Webhook configuration FAILED')
+        LOG.log(Level.WARNING, 'SonarQube Webhook configuration FAILED')
     }
 
     LOG.log(Level.INFO, 'SonarQube configuration complete')
